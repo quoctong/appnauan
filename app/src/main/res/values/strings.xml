@@ -1,0 +1,12 @@
+﻿<resources>
+    <string name="app_name">NhaNau</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="server_address">http://192.168.1.2:8080</string>
+    <string name="facebook_app_id">715644595244934</string>
+    <string name="text_dang_ngay">Đăng ngày</string>
+    <string name="text_symbol_currency">đ</string>
+    <string name="text_install_speech">Điện thoại chưa hỗ trợ phát âm tiếng việt. Cài đặt bản nâng cấp để sử dụng chức năng này</string>
+
+</resources>

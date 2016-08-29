@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group
+        android:id="@+id/nav_main_group">
+        <item android:title="Khám phá">
+            <menu>
+                <item
+                    android:id="@+id/menu_show_food_list"
+                    android:icon="@drawable/ic_menu_manage"
+                    android:title="Danh sách món ăn" />
+            </menu>
+        </item>
+    </group>
+    <group
+        android:id="@+id/nav_about_group">
+        <item android:title="Thông tin thêm">
+            <menu>
+                <item
+                    android:id="@+id/show_guide"
+                    android:icon="@drawable/ic_menu_camera"
+                    android:title="Hướng dẫn" />
+                <item
+                    android:id="@+id/show_contact_info"
+                    android:icon="@drawable/ic_menu_manage"
+                    android:title="Liên hệ" />
+                <item
+                    android:id="@+id/show_about"
+                    android:icon="@drawable/ic_menu_gallery"
+                    android:title="Giới thiệu" />
+            </menu>
+        </item>
+    </group>
+</menu>

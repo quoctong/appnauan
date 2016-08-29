@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color_primary">#FF4081</color>
+    <color name="color_primary_dark">#FF4081</color>
+    <color name="color_accent">#9E9E9E</color>
+    <color name="color_white">#ffffff</color>
+    <color name="color_black">#000000</color>
+    <color name="color_primary_hover">#1a000000</color>
+    <color name="color_divline">#d6dbdd</color>
+    <color name="color_semi_black">#333333</color>
+    <color name="color_gray">#f2f2f2</color>
+    <color name="color_gray_dark">#75f2f2f2</color>
+    <color name="color_button_disable">#d7d7d7</color>
+</resources>

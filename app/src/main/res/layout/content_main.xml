@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_white"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <FrameLayout
+        android:id="@+id/fragment_container_map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal|top" >
+
+        <FrameLayout
+            android:id="@+id/fc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal|top" >
+        </FrameLayout>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_menu_page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp"
+        android:paddingTop="5dp"
+        android:visibility="invisible"
+        android:background="@color/color_white"
+        android:orientation="horizontal">
+
+        <RadioGroup
+            android:id="@+id/radio_group_show_views"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="2dp"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/btn_show_food_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:padding="5dp"
+                android:drawableTop="@drawable/food_icon"
+                android:text="Danh sách"
+                android:textSize="10dp"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/btn_show_info_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:padding="5dp"
+                android:drawableTop="@drawable/lists"
+                android:textSize="10dp"
+                android:text="Bảng tin" />
+
+            <RadioButton
+                android:id="@+id/btn_show_transaction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:padding="5dp"
+                android:drawableTop="@drawable/shopping"
+                android:textSize="10dp"
+                android:text="Giao dịch" />
+
+            <RadioButton
+                android:id="@+id/btn_show_news"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:padding="5dp"
+                android:drawableTop="@drawable/news"
+                android:textSize="10dp"
+                android:text="Tin tức" />
+
+            <RadioButton
+                android:id="@+id/btn_show_more"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:padding="5dp"
+                android:drawableTop="@drawable/more"
+                android:textSize="10dp"
+                android:text="Thêm" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+</RelativeLayout>
