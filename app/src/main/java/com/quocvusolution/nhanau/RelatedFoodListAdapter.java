@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 public class RelatedFoodListAdapter extends ArrayAdapter<FoodPair> {
@@ -39,6 +40,7 @@ public class RelatedFoodListAdapter extends ArrayAdapter<FoodPair> {
         TextView tvCreatedUserDisplayNameLeft = (TextView) convertView.findViewById(R.id.tv_related_food_created_user_display_name_left);
         TextView tvCreatedUserLikedCountLeft = (TextView) convertView.findViewById(R.id.tv_related_food_created_user_liked_count_left);
         TextView tvCreatedUserCommentedCountLeft = (TextView) convertView.findViewById(R.id.tv_related_food_created_user_commented_count_left);
+        RatingBar rtbarRatingLeft = (RatingBar) convertView.findViewById(R.id.rtbar_related_food_rating_left);
 
         tvTitleLeft.setText(item.getFoodLeft().getTitle());
         tvTitleLeft.setTag(item.getFoodLeft().getId());
@@ -68,9 +70,14 @@ public class RelatedFoodListAdapter extends ArrayAdapter<FoodPair> {
         btnLikeLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btnLikeLeft.setImageResource(R.drawable.like_circle_active);
                 int foodId = (int) btnLikeLeft.getTag();
+                ((MainActivity) mContext).doLikeFood(foodId);
             }
         });
+        if (item.getFoodLeft().isLiked()) {
+            btnLikeLeft.setImageResource(R.drawable.like_circle_active);
+        }
 
         if (item.getFoodLeft().getBimapCreatedUserPhoto() != null) {
             ivCreatedUserPhotoLeft.setImageBitmap(item.getFoodLeft().getBimapCreatedUserPhoto());
@@ -78,6 +85,8 @@ public class RelatedFoodListAdapter extends ArrayAdapter<FoodPair> {
         tvCreatedUserDisplayNameLeft.setText(item.getFoodLeft().getCreatedUserDisplayName());
         tvCreatedUserLikedCountLeft.setText(Integer.toString(item.getFoodLeft().getCreatedUserLikedCount()));
         tvCreatedUserCommentedCountLeft.setText(Integer.toString(item.getFoodLeft().getCreatedUserCommentedCount()));
+
+        rtbarRatingLeft.setRating((float)item.getFoodLeft().getRating());
 
         if (item.getFoodRight() != null) {
             final TextView tvTitleRight = (TextView) convertView.findViewById(R.id.tv_related_food_title_right);
@@ -89,6 +98,7 @@ public class RelatedFoodListAdapter extends ArrayAdapter<FoodPair> {
             TextView tvCreatedUserDisplayNameRight = (TextView) convertView.findViewById(R.id.tv_related_food_created_user_display_name_right);
             TextView tvCreatedUserLikedCountRight = (TextView) convertView.findViewById(R.id.tv_related_food_created_user_liked_count_right);
             TextView tvCreatedUserCommentedCountRight = (TextView) convertView.findViewById(R.id.tv_related_food_created_user_commented_count_right);
+            RatingBar rtbarRatingRight = (RatingBar) convertView.findViewById(R.id.rtbar_related_food_rating_right);
 
             tvTitleRight.setText(item.getFoodRight().getTitle());
             tvTitleRight.setTag(item.getFoodRight().getId());
@@ -117,9 +127,14 @@ public class RelatedFoodListAdapter extends ArrayAdapter<FoodPair> {
             btnLikeRight.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    btnLikeRight.setImageResource(R.drawable.like_circle_active);
                     int foodId = (int) btnLikeRight.getTag();
+                    ((MainActivity) mContext).doLikeFood(foodId);
                 }
             });
+            if (item.getFoodRight().isLiked()) {
+                btnLikeRight.setImageResource(R.drawable.like_circle_active);
+            }
 
             if (item.getFoodRight().getBimapCreatedUserPhoto() != null) {
                 ivCreatedUserPhotoRight.setImageBitmap(item.getFoodRight().getBimapCreatedUserPhoto());
@@ -127,6 +142,8 @@ public class RelatedFoodListAdapter extends ArrayAdapter<FoodPair> {
             tvCreatedUserDisplayNameRight.setText(item.getFoodRight().getCreatedUserDisplayName());
             tvCreatedUserLikedCountRight.setText(Integer.toString(item.getFoodRight().getCreatedUserLikedCount()));
             tvCreatedUserCommentedCountRight.setText(Integer.toString(item.getFoodRight().getCreatedUserCommentedCount()));
+
+            rtbarRatingRight.setRating((float)item.getFoodRight().getRating());
         } else {
             LinearLayout laRight = (LinearLayout) convertView.findViewById(R.id.la_related_food_right);
             laRight.setVisibility(View.INVISIBLE);

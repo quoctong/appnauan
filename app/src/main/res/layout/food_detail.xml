@@ -44,43 +44,30 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/btn_item_detail_start1_left"
+                <LinearLayout
+                    android:id="@+id/la_item_detail_rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:background="@drawable/star"/>
+                    android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/btn_item_detail_start2_left"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:background="@drawable/star"/>
+                    <RatingBar
+                        android:id="@+id/rtbar_item_detail_rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:isIndicator="true"
+                        android:numStars="5"
+                        android:stepSize="0.5"
+                        android:rating="2.5"
+                        android:scaleX="0.6"
+                        android:scaleY="0.6"
+                        android:clickable="false"
+                        android:focusableInTouchMode="false"
+                        android:focusable="false"
+                        android:theme="@style/RatingBar"/>
 
-                <ImageButton
-                    android:id="@+id/btn_item_detail_start3_left"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:background="@drawable/star"/>
-
-                <ImageButton
-                    android:id="@+id/btn_item_detail_start4_left"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:background="@drawable/star"/>
-
-                <ImageButton
-                    android:id="@+id/btn_item_detail_start5_left"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:background="@drawable/star"/>
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tv_item_detail_view_count"
@@ -95,7 +82,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="5dp"
                 android:layout_marginBottom="15dp"
                 android:weightSum="3">
 

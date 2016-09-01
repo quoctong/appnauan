@@ -7,8 +7,10 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 public class FoodStore{
     private static final String[] COLUMNS = new String[]{
@@ -37,6 +39,7 @@ public class FoodStore{
             Food.LIKED_COUNT,
             Food.COMMENTED_COUNT,
             Food.VIEW_COUNT,
+            Food.RATED,
             Food.CREATED_AT,
             Food.CREATED_USER,
             Food.UPDATED_AT,
@@ -81,6 +84,7 @@ public class FoodStore{
         values.put(Food.LIKED_COUNT, obj.getLikedCount());
         values.put(Food.COMMENTED_COUNT, obj.getCommentedCount());
         values.put(Food.VIEW_COUNT, obj.getViewCount());
+        values.put(Food.RATED, obj.isRated());
         values.put(Food.CREATED_AT, obj.getCreatedAt().getTime());
         values.put(Food.CREATED_USER, obj.getCreatedUser());
         values.put(Food.UPDATED_AT, obj.getUpdatedAt().getTime());
@@ -117,6 +121,7 @@ public class FoodStore{
         obj.setLikedCount(cursor.getInt(cursor.getColumnIndexOrThrow(Food.LIKED_COUNT)));
         obj.setCommentedCount(cursor.getInt(cursor.getColumnIndexOrThrow(Food.COMMENTED_COUNT)));
         obj.setViewCount(cursor.getInt(cursor.getColumnIndexOrThrow(Food.VIEW_COUNT)));
+        obj.setRated(cursor.getInt(cursor.getColumnIndexOrThrow(Food.RATED)) == 1);
         obj.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Food.CREATED_AT))));
         obj.setCreatedUser(cursor.getString(cursor.getColumnIndexOrThrow(Food.CREATED_USER)));
         obj.setUpdatedAt(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Food.UPDATED_AT))));
@@ -124,6 +129,12 @@ public class FoodStore{
         obj.setDeletedAt(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Food.DELETED_AT))));
         obj.setDeletedUser(cursor.getString(cursor.getColumnIndexOrThrow(Food.DELETED_USER)));
         obj.setDeleted(cursor.getInt(cursor.getColumnIndexOrThrow(Food.DELETED)) == 1);
+    }
+
+    private String unAccent(String s) {
+        String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(temp).replaceAll("").replaceAll("Đ", "D").replaceAll("đ", "d");
     }
 
     public Food getByRowId(int rowID) {
@@ -183,6 +194,7 @@ public class FoodStore{
         obj.setCreatedAt(new Date());
         obj.setUpdatedAt(new Date());
         ContentValues values = getCData(obj);
+        values.put(Food.TITLE_A, unAccent(obj.getTitle()));
         try {
             return (int) mDb.insert(Food.TB_NAME, null, values);
         } catch (Exception e) {
@@ -193,6 +205,7 @@ public class FoodStore{
     public void update(Food obj) {
         obj.setUpdatedAt(new Date());
         ContentValues values = getCData(obj);
+        values.put(Food.TITLE_A, unAccent(obj.getTitle()));
         String whereClause = Food.ID + "=?";
         String whereArgs[] = new String[]{String.valueOf(obj.getRowId())};
         try {
@@ -211,5 +224,24 @@ public class FoodStore{
             mDb.update(Food.TB_NAME, values, whereClause, whereArgs);
         } catch (Exception e) {
         }
+    }
+
+    public ArrayList<Food> getSuggestList(String suggest, int skip, int take) {
+        ArrayList<Food> list = new ArrayList<Food>();
+        Cursor cursor;
+        try {
+            cursor = mDb.query(Food.TB_NAME, COLUMNS,
+                    Food.TITLE_A + " LIKE '%" + suggest + "%'", null,
+                    null, null, Food.CREATED_AT + " DESC", Integer.toString(skip) + "," + Integer.toString(take));
+            if (cursor.moveToFirst()) {
+                do {
+                    Food rowObj = new Food();
+                    setCData(rowObj, cursor);
+                    list.add(rowObj);
+                } while(cursor.moveToNext());
+            }
+        } catch (SQLException e) {
+        }
+        return list;
     }
 }

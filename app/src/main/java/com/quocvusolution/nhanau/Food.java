@@ -31,6 +31,8 @@ public class Food extends BObject {
     public static final String LIKED_COUNT = "LikedCount";
     public static final String COMMENTED_COUNT = "CommentedCount";
     public static final String VIEW_COUNT = "ViewCount";
+    public static final String RATED = "Rated";
+    public static final String TITLE_A = "TitleA";
 
     public String getTitle() {
         return Title;
@@ -240,6 +242,14 @@ public class Food extends BObject {
         ViewCount = viewCount;
     }
 
+    public boolean isRated() {
+        return Rated;
+    }
+
+    public void setRated(boolean rated) {
+        Rated = rated;
+    }
+
     public void setJData(JSONObject jObject) {
         super.setJData(jObject);
         this.setTitle(JsonUtility.getString(jObject, TITLE));
@@ -265,6 +275,7 @@ public class Food extends BObject {
         this.setLikedCount(JsonUtility.getInt(jObject, LIKED_COUNT));
         this.setCommentedCount(JsonUtility.getInt(jObject, COMMENTED_COUNT));
         this.setViewCount(JsonUtility.getInt(jObject, VIEW_COUNT));
+        this.setRated(JsonUtility.getBoolean(jObject, RATED));
     }
 
     private String Title;
@@ -293,6 +304,7 @@ public class Food extends BObject {
     private int LikedCount;
     private int CommentedCount;
     private int ViewCount;
+    private boolean Rated;
 
     public Food() {
         super();
@@ -322,5 +334,6 @@ public class Food extends BObject {
         this.LikedCount = 0;
         this.CommentedCount = 0;
         this.ViewCount = 0;
+        this.Rated = false;
     }
 }

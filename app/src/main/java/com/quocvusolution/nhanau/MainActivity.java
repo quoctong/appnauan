@@ -19,6 +19,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,6 +54,8 @@ public class MainActivity extends AppCompatActivity
     public static final String FOOD_DETAIL_URL = "/Food/FoodDetail";
     public static final String RELATED_FOOD_LIST_URL = "/Food/RelatedFoodList";
     public static final String USER_COMMENT_LIST_URL = "/UserComment/UserCommentList";
+    public static final String FOOD_LIKE_URL = "/Food/FoodLike";
+    public static final String FOOD_RATING_URL = "/Food/FoodRating";
 
     public AppSQLiteOpenHelper getAppSQLiteOpenHelper() {
         return mAppSQLiteOpenHelper;
@@ -115,7 +119,6 @@ public class MainActivity extends AppCompatActivity
 
         registerRadioButtonPage();
         doLogin();
-        showFoodListFragment();
 
         final String googleTtsPackage = "com.google.android.textToSpeech";
         mSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -139,6 +142,18 @@ public class MainActivity extends AppCompatActivity
         });
         mSpeech.setEngineByPackageName(googleTtsPackage);
         mSpeech.setSpeechRate((float)0.8);
+
+        FoodAutoCompleteAdapter autoCompleteAdapter = new FoodAutoCompleteAdapter(this, R.layout.food_autocomplete_item);
+        AutoCompleteTextView actvSearch = (AutoCompleteTextView) findViewById(R.id.actv_search);
+        actvSearch.setAdapter(autoCompleteAdapter);
+        actvSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View arg1, int pos, long id) {
+                hideSearchBox();
+                Food item = (Food) parent.getAdapter().getItem(pos);
+                showFoodDetailFragment(item.getId());
+            }
+        });
     }
 
     public String getAbsoluteUrlPath(String url) {
@@ -239,6 +254,31 @@ public class MainActivity extends AppCompatActivity
     public void checkMenuPage(int pageId) {
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radio_group_show_views);
         radioGroup.check(pageId);
+    }
+
+    private boolean isSearchBoxShow = false;
+    public void showSearch(MenuItem menuItem) {
+        toggleSearchBox();
+    }
+
+    public void toggleSearchBox() {
+        if (isSearchBoxShow) {
+            hideSearchBox();
+        } else {
+            showSearchBox();
+        }
+    }
+
+    public void showSearchBox() {
+        AutoCompleteTextView actvSearch = (AutoCompleteTextView) findViewById(R.id.actv_search);
+        actvSearch.setVisibility(View.VISIBLE);
+        isSearchBoxShow = true;
+    }
+
+    public void hideSearchBox() {
+        AutoCompleteTextView actvSearch = (AutoCompleteTextView) findViewById(R.id.actv_search);
+        actvSearch.setVisibility(View.GONE);
+        isSearchBoxShow = false;
     }
 
     public void doLogout(MenuItem menuItem) {
@@ -385,6 +425,93 @@ public class MainActivity extends AppCompatActivity
                 }
             } catch (Exception e) {
             }
+        }
+    }
+
+    public void doLikeFood(int foodId) {
+        String taskUrl = getAbsoluteUrlPath(MainActivity.FOOD_LIKE_URL);
+        LikeFoodTask task = new LikeFoodTask();
+        task.execute(taskUrl, foodId);
+    }
+
+    public void likeFood(String url, RequestQueue requestQueue) {
+        RequestFuture<String> future = RequestFuture.newFuture();
+        StringRequest request = new StringRequest(Request.Method.POST, url, future, future) {
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("username", mUser.getUsername());
+                return params;
+            }
+        };
+        requestQueue.add(request);
+        try {
+            String response = future.get();
+        } catch (Exception e) {
+        }
+    }
+
+    public class LikeFoodTask extends AsyncTask<Object, Void, Object> {
+        @Override
+        protected Object doInBackground(Object... params) {
+            try {
+                String url = params[0].toString();
+                int foodId = (int)params[1];
+                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                likeFood(url + "/" + Integer.toString(foodId), requestQueue);
+            } catch (Exception e) {
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object result) {
+            super.onPostExecute(result);
+        }
+    }
+
+    public void doRateFood(int foodId, double rating) {
+        String taskUrl = getAbsoluteUrlPath(MainActivity.FOOD_RATING_URL);
+        RateFoodTask task = new RateFoodTask();
+        task.execute(taskUrl, foodId, rating);
+    }
+
+    public void rateFood(double rating, String url, RequestQueue requestQueue) {
+        final String ratingVal = Double.toString(rating);
+        RequestFuture<String> future = RequestFuture.newFuture();
+        StringRequest request = new StringRequest(Request.Method.POST, url, future, future) {
+            @Override
+            protected Map<String,String> getParams() {
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("username", mUser.getUsername());
+                params.put("rating", ratingVal);
+                return params;
+            }
+        };
+        requestQueue.add(request);
+        try {
+            String response = future.get();
+        } catch (Exception e) {
+        }
+    }
+
+    public class RateFoodTask extends AsyncTask<Object, Void, Object> {
+        @Override
+        protected Object doInBackground(Object... params) {
+            try {
+                String url = params[0].toString();
+                int foodId = (int)params[1];
+                double rating = (double)params[2];
+                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                rateFood(rating, url + "/" + Integer.toString(foodId), requestQueue);
+            } catch (Exception e) {
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object result) {
+            super.onPostExecute(result);
         }
     }
 }

@@ -80,7 +80,11 @@ public class AppSQLiteOpenHelper extends SQLiteOpenHelper {
                 + Food.DELETED_USER
                 + " text not null,"
                 + Food.DELETED
-                + " integer not null" + ");";
+                + " integer not null,"
+                + Food.RATED
+                + " integer not null,"
+                + Food.TITLE_A
+                + " text not null" + ");";
         return sql;
     }
 

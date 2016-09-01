@@ -56,36 +56,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-                    <ImageButton
-                        android:id="@+id/btn_food_start1_left"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+
+                    <RatingBar
+                        android:id="@+id/rtbar_food_rating_left"
+                        android:layout_width="235dp"
+                        android:layout_height="45dp"
+                        android:isIndicator="true"
+                        android:numStars="5"
+                        android:stepSize="0.5"
+                        android:rating="2.5"
+                        android:scaleX="0.6"
+                        android:scaleY="0.6"
+                        android:transformPivotX="0dp"
+                        android:transformPivotY="15dp"
+                        android:clickable="false"
+                        android:focusableInTouchMode="false"
                         android:focusable="false"
-                        android:background="@drawable/star"/>
-                    <ImageButton
-                        android:id="@+id/btn_food_start2_left"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:background="@drawable/star"/>
-                    <ImageButton
-                        android:id="@+id/btn_food_start3_left"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:background="@drawable/star"/>
-                    <ImageButton
-                        android:id="@+id/btn_food_start4_left"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:background="@drawable/star"/>
-                    <ImageButton
-                        android:id="@+id/btn_food_start5_left"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:background="@drawable/star"/>
+                        android:theme="@style/RatingBar"/>
+
                 </LinearLayout>
 
                 <TextView
@@ -283,36 +271,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-                    <ImageButton
-                        android:id="@+id/btn_food_start1_right"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+
+                    <RatingBar
+                        android:id="@+id/rtbar_food_rating_right"
+                        android:layout_width="235dp"
+                        android:layout_height="45dp"
+                        android:isIndicator="true"
+                        android:numStars="5"
+                        android:stepSize="0.5"
+                        android:rating="2.5"
+                        android:scaleX="0.6"
+                        android:scaleY="0.6"
+                        android:transformPivotX="0dp"
+                        android:transformPivotY="15dp"
+                        android:clickable="false"
+                        android:focusableInTouchMode="false"
                         android:focusable="false"
-                        android:background="@drawable/star"/>
-                    <ImageButton
-                        android:id="@+id/btn_food_start2_right"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:background="@drawable/star"/>
-                    <ImageButton
-                        android:id="@+id/btn_food_start3_right"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:background="@drawable/star"/>
-                    <ImageButton
-                        android:id="@+id/btn_food_start4_right"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:background="@drawable/star"/>
-                    <ImageButton
-                        android:id="@+id/btn_food_start5_right"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:background="@drawable/star"/>
+                        android:theme="@style/RatingBar"/>
+
                 </LinearLayout>
 
                 <TextView

@@ -11,4 +11,5 @@
     <color name="color_gray">#f2f2f2</color>
     <color name="color_gray_dark">#75f2f2f2</color>
     <color name="color_button_disable">#d7d7d7</color>
+    <color name="color_yellow">#ffdd00</color>
 </resources>

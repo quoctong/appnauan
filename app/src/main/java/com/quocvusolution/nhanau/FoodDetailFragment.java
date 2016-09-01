@@ -11,7 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.quocvusolution.utility.FileUtility;
@@ -79,6 +82,8 @@ public class FoodDetailFragment extends Fragment {
             final Button btnDetailCook = (Button) getView().findViewById(R.id.btn_item_detail_cook);
             final Button btnComment = (Button) getView().findViewById(R.id.btn_item_detail_comment);
             final Button btnRelate = (Button) getView().findViewById(R.id.btn_item_detail_relate);
+            final LinearLayout laRating = (LinearLayout) getView().findViewById(R.id.la_item_detail_rating);
+            RatingBar rtbarRating = (RatingBar) getView().findViewById(R.id.rtbar_item_detail_rating);
 
             if (mFood.getBitmapPhotos() != null && mFood.getBitmapPhotos().length > 0) {
                 ivItemPhoto.setImageBitmap(mFood.getBitmapPhotos()[0]);
@@ -133,6 +138,18 @@ public class FoodDetailFragment extends Fragment {
                     showRelatedFoodListFragment(id);
                 }
             });
+
+            rtbarRating.setRating((float)mFood.getRating());
+            if (!mFood.isRated()) {
+                laRating.setTag(mFood.getId());
+                laRating.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int id = (int) laRating.getTag();
+                        showFoodRatingDialogFragment(id);
+                    }
+                });
+            }
 
             showFoodDetailCookFragment(mFood);
 
@@ -220,5 +237,14 @@ public class FoodDetailFragment extends Fragment {
             transaction.addToBackStack(null);
             transaction.commit();
         }
+    }
+
+    public void showFoodRatingDialogFragment(int id) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FoodRatingDialogFragment fragment = new FoodRatingDialogFragment();
+        Bundle args = new Bundle();
+        args.putInt("id", id);
+        fragment.setArguments(args);
+        fragment.show(fm, "food_rating_dialog");
     }
 }
