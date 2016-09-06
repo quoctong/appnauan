@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.quocvusolution.utility.AndroidUtility;
 
 public class FoodDetailCookFragment extends Fragment {
-    private String mSpeechPackageName = "com.google.android.tts";
     private int mFoodId = 0;
     private String[] mMaterials;
     private String[] mCookingStemps;
@@ -43,13 +42,19 @@ public class FoodDetailCookFragment extends Fragment {
         btnMaterialsSpeaker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkSpeechPackage();
+                ((MainActivity) getActivity()).checkSpeechPackage();
+                TextToSpeech speech = ((MainActivity) getActivity()).getSpeech();
+                speech.stop();
                 String[] materials = (String[]) btnMaterialsSpeaker.getTag();
-                ((MainActivity) getActivity()).getSpeech().stop();
-                for (int i = 0; i < materials.length; i++) {
-                    ((MainActivity) getActivity()).getSpeech().speak(materials[i], TextToSpeech.QUEUE_ADD, null);
-                    ((MainActivity) getActivity()).getSpeech().playSilence(1000, TextToSpeech.QUEUE_ADD, null);
+                if (materials != null) {
+                    speech.speak(getResources().getString(R.string.text_materials), TextToSpeech.QUEUE_ADD, null);
+                    speech.playSilence(1000, TextToSpeech.QUEUE_ADD, null);
+                    for (int i = 0; i < materials.length; i++) {
+                        speech.speak(materials[i], TextToSpeech.QUEUE_ADD, null);
+                        speech.playSilence(1000, TextToSpeech.QUEUE_ADD, null);
+                    }
                 }
+
             }
         });
 
@@ -57,12 +62,17 @@ public class FoodDetailCookFragment extends Fragment {
         btnCookingStepsSpeaker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkSpeechPackage();
+                ((MainActivity) getActivity()).checkSpeechPackage();
+                TextToSpeech speech = ((MainActivity) getActivity()).getSpeech();
+                speech.stop();
                 String[] cookingSteps = (String[]) btnCookingStepsSpeaker.getTag();
-                ((MainActivity) getActivity()).getSpeech().stop();
-                for (int i = 0; i < cookingSteps.length; i++) {
-                    ((MainActivity) getActivity()).getSpeech().speak(cookingSteps[i], TextToSpeech.QUEUE_ADD, null);
-                    ((MainActivity) getActivity()).getSpeech().playSilence(1000, TextToSpeech.QUEUE_ADD, null);
+                if (cookingSteps != null) {
+                    speech.speak(getResources().getString(R.string.text_cooking_steps), TextToSpeech.QUEUE_ADD, null);
+                    speech.playSilence(1000, TextToSpeech.QUEUE_ADD, null);
+                    for (int i = 0; i < cookingSteps.length; i++) {
+                        speech.speak(cookingSteps[i], TextToSpeech.QUEUE_ADD, null);
+                        speech.playSilence(1000, TextToSpeech.QUEUE_ADD, null);
+                    }
                 }
             }
         });
@@ -71,10 +81,15 @@ public class FoodDetailCookFragment extends Fragment {
         btnTipSpeaker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkSpeechPackage();
+                ((MainActivity) getActivity()).checkSpeechPackage();
+                TextToSpeech speech = ((MainActivity) getActivity()).getSpeech();
+                speech.stop();
                 String tip = (String) btnTipSpeaker.getTag();
-                ((MainActivity) getActivity()).getSpeech().stop();
-                ((MainActivity) getActivity()).getSpeech().speak(tip, TextToSpeech.QUEUE_ADD, null);
+                if (tip != null && !tip.equals("")) {
+                    speech.speak(getResources().getString(R.string.text_tip), TextToSpeech.QUEUE_ADD, null);
+                    speech.playSilence(1000, TextToSpeech.QUEUE_ADD, null);
+                    speech.speak(tip, TextToSpeech.QUEUE_ADD, null);
+                }
             }
         });
 
@@ -88,25 +103,5 @@ public class FoodDetailCookFragment extends Fragment {
         AndroidUtility.setDynamicHeight(lvCookingSteps);
 
         return view;
-    }
-
-    public void checkSpeechPackage() {
-        int minVersion = 210309111;
-        if (!AndroidUtility.isAppInstalled(getContext(), mSpeechPackageName)) {
-            showInstallSpeechDialogFragment();
-        } else {
-            int code = AndroidUtility.getPackageVersionCode(getContext(), mSpeechPackageName);
-            if (code < minVersion) {
-                showInstallSpeechDialogFragment();
-            }
-        }
-    }
-
-    public void showInstallSpeechDialogFragment() {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        InstallSpeechDialogFragment fragment = new InstallSpeechDialogFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        fragment.show(fm, "install_speech_dialog");
     }
 }

@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -33,6 +34,7 @@ import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.login.LoginManager;
+import com.quocvusolution.utility.AndroidUtility;
 import com.quocvusolution.utility.ImageUtility;
 
 import org.json.JSONObject;
@@ -91,6 +93,8 @@ public class MainActivity extends AppCompatActivity
 
     private UserAccount mUser;
 
+    private boolean mSpeechInit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         CookieHandler.setDefault(new CookieManager());
@@ -119,29 +123,7 @@ public class MainActivity extends AppCompatActivity
 
         registerRadioButtonPage();
         doLogin();
-
-        final String googleTtsPackage = "com.google.android.textToSpeech";
-        mSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    mSpeech.setEngineByPackageName(googleTtsPackage);
-                    mSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
-                        @Override
-                        public void onDone(String utteranceId) {
-                        }
-                        @Override
-                        public void onError(String utteranceId) {
-                        }
-                        @Override
-                        public void onStart(String utteranceId) {
-                        }
-                    });
-                }
-            }
-        });
-        mSpeech.setEngineByPackageName(googleTtsPackage);
-        mSpeech.setSpeechRate((float)0.8);
+        initSpeech();
 
         FoodAutoCompleteAdapter autoCompleteAdapter = new FoodAutoCompleteAdapter(this, R.layout.food_autocomplete_item);
         AutoCompleteTextView actvSearch = (AutoCompleteTextView) findViewById(R.id.actv_search);
@@ -272,13 +254,20 @@ public class MainActivity extends AppCompatActivity
     public void showSearchBox() {
         AutoCompleteTextView actvSearch = (AutoCompleteTextView) findViewById(R.id.actv_search);
         actvSearch.setVisibility(View.VISIBLE);
+        actvSearch.setFocusableInTouchMode(true);
+        actvSearch.requestFocus();
         isSearchBoxShow = true;
+        InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(MainActivity.INPUT_METHOD_SERVICE);
+        inputMethodManager.showSoftInput(actvSearch, InputMethodManager.SHOW_IMPLICIT);
     }
 
     public void hideSearchBox() {
         AutoCompleteTextView actvSearch = (AutoCompleteTextView) findViewById(R.id.actv_search);
         actvSearch.setVisibility(View.GONE);
+        actvSearch.setText("");
         isSearchBoxShow = false;
+        InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(MainActivity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(actvSearch.getWindowToken(), 0);
     }
 
     public void doLogout(MenuItem menuItem) {
@@ -321,6 +310,57 @@ public class MainActivity extends AppCompatActivity
             transaction.replace(R.id.fc, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
+        }
+    }
+
+    public void showInstallSpeechDialogFragment() {
+        FragmentManager fm = this.getSupportFragmentManager();
+        InstallSpeechDialogFragment fragment = new InstallSpeechDialogFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        fragment.show(fm, "install_speech_dialog");
+    }
+
+    public void initSpeech() {
+        final String googleTtsPackage = "com.google.android.tts";
+        mSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    mSpeechInit = true;
+                    mSpeech.setEngineByPackageName(googleTtsPackage);
+                    mSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                        @Override
+                        public void onDone(String utteranceId) {
+                        }
+                        @Override
+                        public void onError(String utteranceId) {
+                        }
+                        @Override
+                        public void onStart(String utteranceId) {
+                        }
+                    });
+                }
+            }
+        });
+        mSpeech.setEngineByPackageName(googleTtsPackage);
+        mSpeech.setSpeechRate((float)0.8);
+    }
+
+    public void checkSpeechPackage() {
+        if (!mSpeechInit) {
+            final String googleTtsPackage = "com.google.android.tts";
+            int minVersion = 210309111;
+            if (!AndroidUtility.isAppInstalled(this, googleTtsPackage)) {
+                showInstallSpeechDialogFragment();
+            } else {
+                int code = AndroidUtility.getPackageVersionCode(this, googleTtsPackage);
+                if (code < minVersion) {
+                    showInstallSpeechDialogFragment();
+                } else {
+                    initSpeech();
+                }
+            }
         }
     }
 

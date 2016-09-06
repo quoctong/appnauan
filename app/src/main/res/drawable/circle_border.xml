@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
     <!-- The fill color -->
-    <solid android:color="#F96C08" />
+    <solid android:color="@color/color_primary" />
     <!-- Just to add a border -->
     <stroke
-        android:color="#F96C08"
-        android:width="2dp" />
+        android:color="@color/color_white"
+        android:width="1dp" />
 </shape>

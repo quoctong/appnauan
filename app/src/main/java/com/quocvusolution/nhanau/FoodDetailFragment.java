@@ -2,11 +2,15 @@ package com.quocvusolution.nhanau;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +19,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.quocvusolution.utility.FileUtility;
 import com.quocvusolution.utility.ImageUtility;
@@ -30,6 +36,7 @@ public class FoodDetailFragment extends Fragment {
     private int mFoodId = 0;
     private Food mFood = null;
     FoodStore mFoodStore;
+    private View mAddToCartView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,7 +46,16 @@ public class FoodDetailFragment extends Fragment {
         mFood = mFoodStore.getById(mFoodId);
         fillImage(mFood);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.food_detail, container, false);
+        View parent = inflater.inflate(R.layout.food_detail, container, false);
+        mAddToCartView = inflater.inflate(R.layout.food_add_msg,(ViewGroup) parent.findViewById(R.id.la_food_add_msg));
+        ImageView imageView = (ImageView) mAddToCartView.findViewById(R.id.iv_food_add_msg_image);
+        if (mFood.getBitmapPhotos() != null && mFood.getBitmapPhotos().length > 0) {
+            imageView.setImageBitmap(mFood.getBitmapPhotos()[0]);
+        }
+        TextView textView = (TextView) mAddToCartView.findViewById(R.id.iv_food_add_msg_text);
+        String text = getResources().getString(R.string.text_add_to_cart).replace(getResources().getString(R.string.text_add_to_cart_var), mFood.getTitle());
+        textView.setText(Html.fromHtml(text));
+        return parent;
     }
 
     @Override
@@ -67,8 +83,15 @@ public class FoodDetailFragment extends Fragment {
     public void refresh() {
         if (mFood != null) {
             getActivity().setTitle(mFood.getTitle());
+            TextView tvItemLikeCount = (TextView) getView().findViewById(R.id.tv_item_detail_liked_count);
+            TextView tvItemPhotoCount = (TextView) getView().findViewById(R.id.tv_item_detail_photo_count);
+            final LinearLayout laCart = (LinearLayout) getView().findViewById(R.id.la_item_detail_cart);
+            final RelativeLayout laPhotoList = (RelativeLayout) getView().findViewById(R.id.la_item_detail_photo_list);
+            final LinearLayout laShare = (LinearLayout) getView().findViewById(R.id.la_item_detail_share);
+            final LinearLayout laSpeaker = (LinearLayout) getView().findViewById(R.id.la_item_detail_speaker);
             TextView tvItemTitle = (TextView) getView().findViewById(R.id.tv_item_detail_title);
             ImageView ivItemPhoto = (ImageView) getView().findViewById(R.id.iv_item_detail_photo);
+            final ImageButton btnItemLike = (ImageButton) getView().findViewById(R.id.btn_item_detail_like);
             TextView tvItemPrice = (TextView) getView().findViewById(R.id.tv_item_detail_price);
             TextView tvItemCookedTime = (TextView) getView().findViewById(R.id.tv_item_detail_cooked_time);
             TextView tvItemServeCount = (TextView) getView().findViewById(R.id.tv_item_detail_serve_count);
@@ -85,9 +108,87 @@ public class FoodDetailFragment extends Fragment {
             final LinearLayout laRating = (LinearLayout) getView().findViewById(R.id.la_item_detail_rating);
             RatingBar rtbarRating = (RatingBar) getView().findViewById(R.id.rtbar_item_detail_rating);
 
+            tvItemLikeCount.setText(Integer.toString(mFood.getLikedCount()));
             if (mFood.getBitmapPhotos() != null && mFood.getBitmapPhotos().length > 0) {
                 ivItemPhoto.setImageBitmap(mFood.getBitmapPhotos()[0]);
+                tvItemPhotoCount.setText(Integer.toString(mFood.getBitmapPhotos().length));
             }
+            laCart.setTag(mFood);
+            laCart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Food food = (Food) laCart.getTag();
+                    Toast toast = new Toast(getContext());
+                    toast.setView(mAddToCartView);
+                    toast.setDuration(Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.FILL_HORIZONTAL|Gravity.TOP, 0, 0);
+                    toast.show();
+                }
+            });
+            laPhotoList.setTag(mFood.getId());
+            laPhotoList.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int foodId = (int) laPhotoList.getTag();
+                }
+            });
+            laShare.setTag(mFood.getId());
+            laShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int foodId = (int) laShare.getTag();
+                }
+            });
+            laSpeaker.setTag(mFood);
+            laSpeaker.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Food food = (Food) laSpeaker.getTag();
+                    ((MainActivity) getActivity()).checkSpeechPackage();
+                    TextToSpeech speech = ((MainActivity) getActivity()).getSpeech();
+                    if (speech != null) {
+                        speech.stop();
+                        speech.speak(food.getTitle(), TextToSpeech.QUEUE_ADD, null);
+                        speech.playSilence(1000, TextToSpeech.QUEUE_ADD, null);
+                        String[] materials = food.getMaterials();
+                        if (materials != null) {
+                            speech.speak(getResources().getString(R.string.text_materials), TextToSpeech.QUEUE_ADD, null);
+                            speech.playSilence(1000, TextToSpeech.QUEUE_ADD, null);
+                            for (int i = 0; i < materials.length; i++) {
+                                speech.speak(materials[i], TextToSpeech.QUEUE_ADD, null);
+                                speech.playSilence(1000, TextToSpeech.QUEUE_ADD, null);
+                            }
+                        }
+                        String[] cookingSteps = food.getCookingSteps();
+                        if (cookingSteps != null) {
+                            speech.speak(getResources().getString(R.string.text_cooking_steps), TextToSpeech.QUEUE_ADD, null);
+                            speech.playSilence(1000, TextToSpeech.QUEUE_ADD, null);
+                            for (int i = 0; i < cookingSteps.length; i++) {
+                                speech.speak(cookingSteps[i], TextToSpeech.QUEUE_ADD, null);
+                                speech.playSilence(1000, TextToSpeech.QUEUE_ADD, null);
+                            }
+                        }
+                        if (food.getTip() != null && !food.getTip().equals("")) {
+                            speech.speak(getResources().getString(R.string.text_tip), TextToSpeech.QUEUE_ADD, null);
+                            speech.playSilence(1000, TextToSpeech.QUEUE_ADD, null);
+                            speech.speak(food.getTip(), TextToSpeech.QUEUE_ADD, null);
+                        }
+                    }
+                }
+            });
+            btnItemLike.setTag(mFood.getId());
+            btnItemLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btnItemLike.setImageResource(R.drawable.like_circle_active);
+                    int foodId = (int) btnItemLike.getTag();
+                    ((MainActivity) getActivity()).doLikeFood(foodId);
+                }
+            });
+            if (mFood.isLiked()) {
+                btnItemLike.setImageResource(R.drawable.like_circle_active);
+            }
+
             tvItemTitle.setText(mFood.getTitle());
 
             NumberFormat nf = NumberFormat.getNumberInstance(Locale.GERMAN);
@@ -139,7 +240,7 @@ public class FoodDetailFragment extends Fragment {
                 }
             });
 
-            rtbarRating.setRating((float)mFood.getRating());
+            rtbarRating.setRating((float) mFood.getRating());
             if (!mFood.isRated()) {
                 laRating.setTag(mFood.getId());
                 laRating.setOnClickListener(new View.OnClickListener() {
@@ -177,20 +278,21 @@ public class FoodDetailFragment extends Fragment {
         btnDetailRelate.setTextColor(ContextCompat.getColor(getContext(), R.color.color_black));
 
         switch (id) {
-            case R.id.btn_item_detail_cook:{
+            case R.id.btn_item_detail_cook: {
                 btnDetailCook.setTextColor(ContextCompat.getColor(getContext(), R.color.color_primary));
                 break;
             }
-            case R.id.btn_item_detail_comment:{
+            case R.id.btn_item_detail_comment: {
                 btnDetailComment.setTextColor(ContextCompat.getColor(getContext(), R.color.color_primary));
                 break;
             }
-            case R.id.btn_item_detail_relate:{
+            case R.id.btn_item_detail_relate: {
                 btnDetailRelate.setTextColor(ContextCompat.getColor(getContext(), R.color.color_primary));
                 break;
             }
         }
     }
+
     public void showFoodDetailCookFragment(Food food) {
         if (getActivity().findViewById(R.id.f_food_detail) != null) {
             setBtnExpandColor(R.id.btn_item_detail_cook);
