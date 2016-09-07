@@ -3,12 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <group
         android:id="@+id/nav_main_group">
+    </group>
+    <group
+        android:id="@+id/nav_general_group">
         <item android:title="Khám phá">
             <menu>
                 <item
                     android:id="@+id/menu_show_food_list"
-                    android:icon="@drawable/ic_menu_manage"
+                    android:icon="@drawable/food_icon"
                     android:title="Danh sách món ăn" />
+                <item
+                    android:id="@+id/menu_show_food_save"
+                    android:icon="@drawable/saved_icon"
+                    android:title="Danh sách đã lưu" />
+                <item
+                    android:id="@+id/menu_show_food_cart"
+                    android:icon="@drawable/card"
+                    android:title="Giỏ hàng" />
             </menu>
         </item>
     </group>
@@ -18,15 +29,15 @@
             <menu>
                 <item
                     android:id="@+id/show_guide"
-                    android:icon="@drawable/ic_menu_camera"
+                    android:icon="@drawable/plus"
                     android:title="Hướng dẫn" />
                 <item
                     android:id="@+id/show_contact_info"
-                    android:icon="@drawable/ic_menu_manage"
+                    android:icon="@drawable/plus"
                     android:title="Liên hệ" />
                 <item
                     android:id="@+id/show_about"
-                    android:icon="@drawable/ic_menu_gallery"
+                    android:icon="@drawable/plus"
                     android:title="Giới thiệu" />
             </menu>
         </item>

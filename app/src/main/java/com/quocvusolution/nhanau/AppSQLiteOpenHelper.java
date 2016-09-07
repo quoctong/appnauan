@@ -93,14 +93,86 @@ public class AppSQLiteOpenHelper extends SQLiteOpenHelper {
         return sql;
     }
 
+    public String createFoodCartTableSQL() {
+        String sql = "create table "
+                + FoodCart.TB_NAME + " ("
+                + FoodCart.ROWID
+                + " integer primary key autoincrement not null,"
+                + FoodCart.ID
+                + " integer not null,"
+                + FoodCart.USERNAME
+                + " text not null,"
+                + FoodCart.FOOD_ID
+                + " integer not null,"
+                + FoodCart.FOOD_COUNT
+                + " integer not null,"
+                + FoodCart.CREATED_AT
+                + " integer not null,"
+                + FoodCart.CREATED_USER
+                + " text not null,"
+                + FoodCart.UPDATED_AT
+                + " integer not null,"
+                + FoodCart.UPDATED_USER
+                + " text not null,"
+                + FoodCart.DELETED_AT
+                + " integer not null,"
+                + FoodCart.DELETED_USER
+                + " text not null,"
+                + FoodCart.DELETED
+                + " integer not null" + ");";
+        return sql;
+    }
+
+    public String dropFoodCartTableSQL() {
+        String sql = "DROP TABLE IF EXISTS " + FoodCart.TB_NAME;
+        return sql;
+    }
+
+    public String createFoodSaveTableSQL() {
+        String sql = "create table "
+                + FoodSave.TB_NAME + " ("
+                + FoodSave.ROWID
+                + " integer primary key autoincrement not null,"
+                + FoodSave.ID
+                + " integer not null,"
+                + FoodSave.USERNAME
+                + " text not null,"
+                + FoodSave.FOOD_ID
+                + " integer not null,"
+                + FoodSave.CREATED_AT
+                + " integer not null,"
+                + FoodSave.CREATED_USER
+                + " text not null,"
+                + FoodSave.UPDATED_AT
+                + " integer not null,"
+                + FoodSave.UPDATED_USER
+                + " text not null,"
+                + FoodSave.DELETED_AT
+                + " integer not null,"
+                + FoodSave.DELETED_USER
+                + " text not null,"
+                + FoodSave.DELETED
+                + " integer not null" + ");";
+        return sql;
+    }
+
+    public String dropFoodSaveTableSQL() {
+        String sql = "DROP TABLE IF EXISTS " + FoodSave.TB_NAME;
+        return sql;
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(createFoodTableSQL());
+        db.execSQL(createFoodCartTableSQL());
+        db.execSQL(createFoodSaveTableSQL());
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(dropFoodTableSQL());
+        db.execSQL(dropFoodCartTableSQL());
+        db.execSQL(dropFoodSaveTableSQL());
         onCreate(db);
     }
 }

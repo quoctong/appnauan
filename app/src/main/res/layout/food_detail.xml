@@ -142,7 +142,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/btn_item_detail_save"
+                android:id="@+id/la_item_detail_save"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"

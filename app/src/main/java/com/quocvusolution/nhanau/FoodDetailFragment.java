@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,25 +35,26 @@ public class FoodDetailFragment extends Fragment {
     private int mFoodId = 0;
     private Food mFood = null;
     FoodStore mFoodStore;
-    private View mAddToCartView;
+    FoodCartStore mFoodCartStore;
+    FoodSaveStore mFoodSaveStore;
+    private View mAddFoodView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mFoodId = getArguments().getInt("id");
         mFoodStore = ((MainActivity) getActivity()).getFoodStore();
+        mFoodCartStore = ((MainActivity) getActivity()).getFoodCartStore();
+        mFoodSaveStore = ((MainActivity) getActivity()).getFoodSaveStore();
         mFood = mFoodStore.getById(mFoodId);
         fillImage(mFood);
         // Inflate the layout for this fragment
         View parent = inflater.inflate(R.layout.food_detail, container, false);
-        mAddToCartView = inflater.inflate(R.layout.food_add_msg,(ViewGroup) parent.findViewById(R.id.la_food_add_msg));
-        ImageView imageView = (ImageView) mAddToCartView.findViewById(R.id.iv_food_add_msg_image);
+        mAddFoodView = inflater.inflate(R.layout.food_add_msg,(ViewGroup) parent.findViewById(R.id.la_food_add_msg));
+        ImageView imageView = (ImageView) mAddFoodView.findViewById(R.id.iv_food_add_msg_image);
         if (mFood.getBitmapPhotos() != null && mFood.getBitmapPhotos().length > 0) {
             imageView.setImageBitmap(mFood.getBitmapPhotos()[0]);
         }
-        TextView textView = (TextView) mAddToCartView.findViewById(R.id.iv_food_add_msg_text);
-        String text = getResources().getString(R.string.text_add_to_cart).replace(getResources().getString(R.string.text_add_to_cart_var), mFood.getTitle());
-        textView.setText(Html.fromHtml(text));
         return parent;
     }
 
@@ -88,6 +88,7 @@ public class FoodDetailFragment extends Fragment {
             final LinearLayout laCart = (LinearLayout) getView().findViewById(R.id.la_item_detail_cart);
             final RelativeLayout laPhotoList = (RelativeLayout) getView().findViewById(R.id.la_item_detail_photo_list);
             final LinearLayout laShare = (LinearLayout) getView().findViewById(R.id.la_item_detail_share);
+            final LinearLayout laSave = (LinearLayout) getView().findViewById(R.id.la_item_detail_save);
             final LinearLayout laSpeaker = (LinearLayout) getView().findViewById(R.id.la_item_detail_speaker);
             TextView tvItemTitle = (TextView) getView().findViewById(R.id.tv_item_detail_title);
             ImageView ivItemPhoto = (ImageView) getView().findViewById(R.id.iv_item_detail_photo);
@@ -118,13 +119,23 @@ public class FoodDetailFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     Food food = (Food) laCart.getTag();
+                    FoodCart obj = mFoodCartStore.getByFoodId(food.getId());
+                    if (obj == null) {
+                        obj = new FoodCart();
+                        obj.setFoodId(food.getId());
+                        mFoodCartStore.insert(obj);
+                    }
+                    TextView textView = (TextView) mAddFoodView.findViewById(R.id.iv_food_add_msg_text);
+                    String text = getResources().getString(R.string.text_add_to_cart).replace(getResources().getString(R.string.text_add_to_cart_var), mFood.getTitle());
+                    textView.setText(Html.fromHtml(text));
                     Toast toast = new Toast(getContext());
-                    toast.setView(mAddToCartView);
+                    toast.setView(mAddFoodView);
                     toast.setDuration(Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.FILL_HORIZONTAL|Gravity.TOP, 0, 0);
                     toast.show();
                 }
             });
+
             laPhotoList.setTag(mFood.getId());
             laPhotoList.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -132,6 +143,7 @@ public class FoodDetailFragment extends Fragment {
                     int foodId = (int) laPhotoList.getTag();
                 }
             });
+
             laShare.setTag(mFood.getId());
             laShare.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -139,6 +151,29 @@ public class FoodDetailFragment extends Fragment {
                     int foodId = (int) laShare.getTag();
                 }
             });
+
+            laSave.setTag(mFood);
+            laSave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Food food = (Food) laSave.getTag();
+                    FoodSave obj = mFoodSaveStore.getByFoodId(food.getId());
+                    if (obj == null) {
+                        obj = new FoodSave();
+                        obj.setFoodId(food.getId());
+                        mFoodSaveStore.insert(obj);
+                    }
+                    TextView textView = (TextView) mAddFoodView.findViewById(R.id.iv_food_add_msg_text);
+                    String text = getResources().getString(R.string.text_save).replace(getResources().getString(R.string.text_save_var), mFood.getTitle());
+                    textView.setText(Html.fromHtml(text));
+                    Toast toast = new Toast(getContext());
+                    toast.setView(mAddFoodView);
+                    toast.setDuration(Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.FILL_HORIZONTAL|Gravity.TOP, 0, 0);
+                    toast.show();
+                }
+            });
+
             laSpeaker.setTag(mFood);
             laSpeaker.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -176,6 +211,7 @@ public class FoodDetailFragment extends Fragment {
                     }
                 }
             });
+
             btnItemLike.setTag(mFood.getId());
             btnItemLike.setOnClickListener(new View.OnClickListener() {
                 @Override

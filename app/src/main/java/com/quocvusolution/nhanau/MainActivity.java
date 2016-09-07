@@ -75,6 +75,22 @@ public class MainActivity extends AppCompatActivity
         mFoodStore = foodStore;
     }
 
+    public FoodCartStore getFoodCartStore() {
+        return mFoodCartStore;
+    }
+
+    public void setFoodCartStore(FoodCartStore foodCartStore) {
+        mFoodCartStore = foodCartStore;
+    }
+
+    public FoodSaveStore getFoodSaveStore() {
+        return mFoodSaveStore;
+    }
+
+    public void setFoodSaveStore(FoodSaveStore foodCartStore) {
+        mFoodSaveStore = foodCartStore;
+    }
+
     public ActionBarDrawerToggle getActionBarDrawerToggle() {
         return mDrawerToggle;
     }
@@ -86,6 +102,10 @@ public class MainActivity extends AppCompatActivity
     private AppSQLiteOpenHelper mAppSQLiteOpenHelper;
 
     private FoodStore mFoodStore;
+
+    private FoodCartStore mFoodCartStore;
+
+    private FoodSaveStore mFoodSaveStore;
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -100,6 +120,8 @@ public class MainActivity extends AppCompatActivity
         CookieHandler.setDefault(new CookieManager());
         mAppSQLiteOpenHelper = new AppSQLiteOpenHelper(this);
         mFoodStore = new FoodStore(this, mAppSQLiteOpenHelper.getWritableDatabase());
+        mFoodCartStore = new FoodCartStore(this, mAppSQLiteOpenHelper.getWritableDatabase());
+        mFoodSaveStore = new FoodSaveStore(this, mAppSQLiteOpenHelper.getWritableDatabase());
 
         mUser = SharedPref.getCurrentUser(MainActivity.this);
         if (mUser == null) {
@@ -202,8 +224,16 @@ public class MainActivity extends AppCompatActivity
         setTitle(getResources().getString(R.string.app_name));
 
         int id = item.getItemId();
-        if (id == R.id.menu_show_food_list) {
-            showFoodListFragment();
+        switch (id) {
+            case R.id.menu_show_food_list:
+                showFoodListFragment();
+                break;
+            case R.id.menu_show_food_cart:
+                showFoodCartFragment();
+                break;
+            case R.id.menu_show_food_save:
+                showFoodSaveFragment();
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -281,6 +311,34 @@ public class MainActivity extends AppCompatActivity
         Intent i= new Intent(MainActivity.this,MainActivity.class);
         startActivity(i);
         finish();
+    }
+
+    public void showFoodCartFragment() {
+        if (findViewById(R.id.fc) != null) {
+            hideMenuPage();
+            FoodCartFragment fragment = new FoodCartFragment();
+            Bundle args = new Bundle();
+            fragment.setArguments(args);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.fc, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+    }
+
+    public void showFoodSaveFragment() {
+        if (findViewById(R.id.fc) != null) {
+            hideMenuPage();
+            FoodSaveFragment fragment = new FoodSaveFragment();
+            Bundle args = new Bundle();
+            fragment.setArguments(args);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.fc, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
     }
 
     public void showFoodListFragment() {

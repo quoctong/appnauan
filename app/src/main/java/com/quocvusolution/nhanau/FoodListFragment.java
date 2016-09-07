@@ -86,7 +86,7 @@ public class FoodListFragment extends Fragment implements AdapterView.OnItemClic
 
     public void refresh() {
         ((MainActivity) getActivity()).getSpeech().stop();
-        getActivity().setTitle(getResources().getString(R.string.app_name));
+        getActivity().setTitle(getResources().getString(R.string.text_main_title));
         if (mItems != null) {
             mItemPairs.clear();
             int i = 0;
