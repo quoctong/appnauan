@@ -141,6 +141,7 @@ public class FoodDetailFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     int foodId = (int) laPhotoList.getTag();
+                    showFoodGalleryFragment(foodId);
                 }
             });
 
@@ -384,5 +385,19 @@ public class FoodDetailFragment extends Fragment {
         args.putInt("id", id);
         fragment.setArguments(args);
         fragment.show(fm, "food_rating_dialog");
+    }
+
+    public void showFoodGalleryFragment(int foodId) {
+        if (getActivity().findViewById(R.id.fc) != null) {
+            FoodGallerylFragment fragment = new FoodGallerylFragment();
+            Bundle args = new Bundle();
+            args.putInt("id", foodId);
+            fragment.setArguments(args);
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.fc, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
     }
 }

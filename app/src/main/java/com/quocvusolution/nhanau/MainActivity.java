@@ -244,6 +244,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         // super.onBackPressed();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+        getActionBarDrawerToggle().setToolbarNavigationClickListener(null);
         showFoodListFragment();
     }
 
