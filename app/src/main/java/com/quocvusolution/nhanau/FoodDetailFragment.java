@@ -150,6 +150,7 @@ public class FoodDetailFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     int foodId = (int) laShare.getTag();
+                    showFoodShareDialogFragment(foodId);
                 }
             });
 
@@ -399,5 +400,14 @@ public class FoodDetailFragment extends Fragment {
             transaction.addToBackStack(null);
             transaction.commit();
         }
+    }
+
+    public void showFoodShareDialogFragment(int foodId) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FoodShareDialogFragment fragment = new FoodShareDialogFragment();
+        Bundle args = new Bundle();
+        args.putInt("id", foodId);
+        fragment.setArguments(args);
+        fragment.show(fm, "food_share_dialog");
     }
 }
