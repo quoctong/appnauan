@@ -52,7 +52,7 @@ public class FoodCartFragment extends Fragment implements AdapterView.OnItemClic
                 total += item.getFood().getPrice() * item.getFoodCount();
             }
             mLView = (ListView) mView.findViewById(R.id.lv_food_cart_list);
-            mAdapter = new FoodCartAdapter(getActivity(), mItems);
+            mAdapter = new FoodCartAdapter(getActivity(), mItems, this);
             mLView.setAdapter(mAdapter);
             AndroidUtility.setDynamicHeight(mLView);
             mLView.requestLayout();
@@ -74,5 +74,29 @@ public class FoodCartFragment extends Fragment implements AdapterView.OnItemClic
             File userPhotoFile = FileUtility.getOutputMediaFile(item.getFood().getThumbPhoto(), ((MainActivity) getActivity()).getStorageDirName());
             item.getFood().setBitmapThumbPhoto(ImageUtility.loadImageFile(userPhotoFile.getAbsolutePath()));
         }
+    }
+
+    public void updateTotal() {
+        double total = 0;
+        for (int i = 0; i < mItems.size(); i++) {
+            FoodCart item = mItems.get(i);
+            total += item.getFood().getPrice() * item.getFoodCount();
+        }
+        TextView tvTotal = (TextView) mView.findViewById(R.id.tv_food_cart_total);
+        NumberFormat nf = NumberFormat.getNumberInstance(Locale.GERMAN);
+        tvTotal.setText(nf.format(total) + " " + mView.getResources().getString(R.string.text_symbol_currency));
+    }
+
+    public void removeFoodCart(int id) {
+        for (int i = 0; i < mItems.size(); i++) {
+            FoodCart item = mItems.get(i);
+            if (item.getFoodId() == id) {
+                mItems.remove(i);
+                break;
+            }
+        }
+        mAdapter.notifyDataSetChanged();
+        AndroidUtility.setDynamicHeight(mLView);
+        updateTotal();
     }
 }

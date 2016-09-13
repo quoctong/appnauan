@@ -133,8 +133,8 @@ public class FoodCartStore {
     public void update(FoodCart obj) {
         obj.setUpdatedAt(new Date());
         ContentValues values = getCData(obj);
-        String whereClause = FoodCart.ID + "=?";
-        String whereArgs[] = new String[]{String.valueOf(obj.getRowId())};
+        String whereClause = FoodCart.FOOD_ID + "=?";
+        String whereArgs[] = new String[]{String.valueOf(obj.getFoodId())};
         try {
             mDb.update(FoodCart.TB_NAME, values, whereClause, whereArgs);
         } catch (Exception e) {
@@ -142,13 +142,10 @@ public class FoodCartStore {
     }
 
     public void delete(int id) {
-        ContentValues values = new ContentValues();
-        values.put(FoodCart.DELETED, true);
-        values.put(FoodCart.UPDATED_AT, (new Date()).getTime());
-        String whereClause = FoodCart.ID + "=?";
+        String whereClause = FoodCart.FOOD_ID + "=?";
         String whereArgs[] = new String[]{String.valueOf(id)};
         try {
-            mDb.update(FoodCart.TB_NAME, values, whereClause, whereArgs);
+            mDb.delete(FoodCart.TB_NAME, whereClause, whereArgs);
         } catch (Exception e) {
         }
     }

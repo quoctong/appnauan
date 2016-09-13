@@ -3,7 +3,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="server_address">http://192.168.1.3:8080</string>
+    <string name="server_address">http://192.168.1.4:8080</string>
     <string name="facebook_app_id">715644595244934</string>
     <string name="text_dang_ngay">Đăng ngày</string>
     <string name="text_symbol_currency">đ</string>

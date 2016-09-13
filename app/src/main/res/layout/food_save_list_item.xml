@@ -31,7 +31,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3.5"
+            android:layout_weight="3"
             android:layout_margin="5dp"
             android:gravity="center">
 
@@ -59,6 +59,24 @@
                 android:gravity="left"
                 android:text=""
                 android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_marginLeft="5dp"
+            android:gravity="center"
+            android:layout_gravity="center">
+
+            <ImageButton
+                android:id="@+id/btn_food_save_del"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:focusable="false"
+                android:background="@drawable/ic_clear"/>
 
         </LinearLayout>
 

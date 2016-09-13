@@ -41,7 +41,7 @@ public class FoodSaveFragment extends Fragment implements AdapterView.OnItemClic
                 fillImage(item);
             }
             mLView = (ListView) mView.findViewById(R.id.lv_food_save_list);
-            mAdapter = new FoodSaveAdapter(getActivity(), mItems);
+            mAdapter = new FoodSaveAdapter(getActivity(), mItems, this);
             mLView.setAdapter(mAdapter);
             AndroidUtility.setDynamicHeight(mLView);
             mLView.requestLayout();
@@ -60,5 +60,16 @@ public class FoodSaveFragment extends Fragment implements AdapterView.OnItemClic
             File userPhotoFile = FileUtility.getOutputMediaFile(item.getFood().getThumbPhoto(), ((MainActivity) getActivity()).getStorageDirName());
             item.getFood().setBitmapThumbPhoto(ImageUtility.loadImageFile(userPhotoFile.getAbsolutePath()));
         }
+    }
+
+    public void removeFoodSave(int id) {
+        for (int i = 0; i < mItems.size(); i++) {
+            FoodSave item = mItems.get(i);
+            if (item.getFoodId() == id) {
+                mItems.remove(i);
+                break;
+            }
+        }
+        mAdapter.notifyDataSetChanged();
     }
 }
