@@ -4,17 +4,22 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.quocvusolution.utility.AndroidUtility;
 import com.quocvusolution.utility.FileUtility;
@@ -26,23 +31,36 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserCommentListFragment extends Fragment implements AdapterView.OnItemClickListener {
     ListView mLView;
     UserCommentListAdapter mAdapter;
     ArrayList<UserComment> mItems = new ArrayList<UserComment>();
-
     View mView;
+    int mFoodId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mFoodId = getArguments().getInt("id");
         GetUserCommentListTask task = new GetUserCommentListTask();
-        String taskUrl = ((MainActivity) getActivity()).getAbsoluteUrlPath(MainActivity.USER_COMMENT_LIST_URL);
+        String taskUrl = ((MainActivity) getActivity()).getAbsoluteUrlPath(MainActivity.USER_COMMENT_LIST_URL) + "/" + Integer.toString(mFoodId);
         task.execute(taskUrl);
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.food_detail_comment_list, container, false);
         mView = view;
+        final EditText teComment = (EditText) mView.findViewById(R.id.te_item_detail_comment_input);
+        Button btnComment = (Button) mView.findViewById(R.id.btn_item_detail_comment_post);
+        btnComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String comment = teComment.getText().toString();
+                teComment.setText("");
+                doCommentFood(mFoodId, comment);
+            }
+        });
         return view;
     }
 
@@ -136,6 +154,65 @@ public class UserCommentListFragment extends Fragment implements AdapterView.OnI
                 mAdapter.notifyDataSetChanged();
             } catch (Exception e) {
             }
+        }
+    }
+
+    public void doCommentFood(int foodId, String comment) {
+        String username = ((MainActivity)getActivity()).getUser().getUsername();
+        if (username != null && !username.equals("")) {
+            String taskUrl = ((MainActivity)getActivity()).getAbsoluteUrlPath(MainActivity.USER_COMMENT_URL);
+            CommentFoodTask task = new CommentFoodTask();
+            task.execute(taskUrl, foodId, comment);
+        } else {
+            ((MainActivity)getActivity()).showLoginActivity();
+        }
+    }
+
+    public void commentFood(String comment, String url, RequestQueue requestQueue) {
+        final String commentVal = comment;
+        RequestFuture<String> future = RequestFuture.newFuture();
+        StringRequest request = new StringRequest(Request.Method.POST, url, future, future) {
+            @Override
+            protected Map<String,String> getParams() {
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("username", ((MainActivity)getActivity()).getUser().getUsername());
+                params.put("comment", commentVal);
+                return params;
+            }
+        };
+        requestQueue.add(request);
+        try {
+            String response = future.get();
+            JSONObject jObjectRoot = new JSONObject(response);
+            JSONObject jObject = jObjectRoot.getJSONObject("Comment");
+            UserComment item = new UserComment();
+            item.setJData(jObject);
+            GetImageTask task1 = new GetImageTask();
+            task1.execute(item.getUserPhoto(), item);
+            mItems.add(item);
+        } catch (Exception e) {
+        }
+    }
+
+    public class CommentFoodTask extends AsyncTask<Object, Void, Object> {
+        @Override
+        protected Object doInBackground(Object... params) {
+            try {
+                String url = params[0].toString();
+                int foodId = (int)params[1];
+                String comment = (String)params[2];
+                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                commentFood(comment, url + "/" + Integer.toString(foodId), requestQueue);
+            } catch (Exception e) {
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object result) {
+            super.onPostExecute(result);
+            mAdapter.notifyDataSetChanged();
+            AndroidUtility.setDynamicHeight(mLView);
         }
     }
 }

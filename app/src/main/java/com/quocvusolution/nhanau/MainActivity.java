@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity
     public static final String USER_COMMENT_LIST_URL = "/UserComment/UserCommentList";
     public static final String FOOD_LIKE_URL = "/Food/FoodLike";
     public static final String FOOD_RATING_URL = "/Food/FoodRating";
+    public static final String USER_COMMENT_URL = "/UserComment/Comment";
 
     public AppSQLiteOpenHelper getAppSQLiteOpenHelper() {
         return mAppSQLiteOpenHelper;
@@ -158,6 +159,10 @@ public class MainActivity extends AppCompatActivity
                 showFoodDetailFragment(item.getId());
             }
         });
+    }
+
+    public UserAccount getUser() {
+        return mUser;
     }
 
     public String getAbsoluteUrlPath(String url) {

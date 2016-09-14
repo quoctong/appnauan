@@ -44,7 +44,7 @@ public class UserCommentListAdapter extends ArrayAdapter<UserComment> {
         tvContent.setText(item.getContent());
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         tvCommentedAt.setText(df.format(item.getCreatedAt()));
-        String timeAgo = DateUtils.getRelativeTimeSpanString(item.getCreatedAt().getTime(), (new Date()).getTime(), DateUtils.MINUTE_IN_MILLIS).toString();
+        String timeAgo = DateUtils.getRelativeTimeSpanString(item.getCreatedAt().getTime(), (new Date()).getTime(), DateUtils.HOUR_IN_MILLIS).toString();
         tvCommentedAt.setText(timeAgo);
         tvLikedCount.setText(Integer.toString(item.getLikedCount()));
         tvCommentedCount.setText(Integer.toString(item.getCommentedCount()));
